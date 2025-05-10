@@ -7,25 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* Reset para tela 4K */
+        /* Reset e configurações básicas */
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-size: 1.5vw; /* Tamanho de fonte base responsivo */
+            font-size: 1.5vw;
+            touch-action: manipulation;
         }
         
         body {
             font-family: 'Press Start 2P', cursive;
-            touch-action: manipulation;
             background: linear-gradient(45deg, #3b82f6, #f97316, #8b5cf6, #3b82f6);
             background-size: 300% 300%;
             animation: gradientBG 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
+            will-change: background-position;
         }
         
         @keyframes gradientBG {
@@ -34,7 +35,7 @@
             100% { background-position: 0% 50%; }
         }
         
-        /* Container principal ajustado para 4K */
+        /* Container principal otimizado */
         #app {
             width: 90vw;
             height: 90vh;
@@ -42,19 +43,32 @@
             max-height: 2160px;
             position: relative;
             overflow: hidden;
+            contain: strict;
         }
         
-        /* Ajustes de tamanho para todos os elementos */
-        .game-container {
-            perspective: 1000px;
+        /* Otimizações para o tabuleiro do jogo */
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5vw;
+            width: 60vw;
+            max-width: none;
+            will-change: transform;
+            transform: translateZ(0);
         }
         
         .square {
-            transition: all 0.2s ease;
+            aspect-ratio: 1/1;
+            background-color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.15s ease-out;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
             overflow: hidden;
             border-radius: 1vw;
+            will-change: transform, background-color, box-shadow;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
         
         .square.active {
@@ -68,18 +82,34 @@
             transform: scale(0.95);
         }
         
-        /* Efeitos de animação */
+        /* Efeitos otimizados */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+            0%, 100% { transform: translateX(0) scale(0.95); }
+            20% { transform: translateX(-5px) scale(0.95); }
+            40% { transform: translateX(5px) scale(0.95); }
+            60% { transform: translateX(-5px) scale(0.95); }
+            80% { transform: translateX(5px) scale(0.95); }
         }
         
         .shake {
             animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
         }
         
-        /* Efeito de vidro quebrando melhorado */
+        /* Efeito de vidro quebrando otimizado */
+        .crack-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, transparent 48%, white 48%, white 52%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, white 48%, white 52%, transparent 52%);
+            background-size: 100% 100%;
+            animation: crack 0.6s ease-out forwards;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            will-change: transform, opacity;
+        }
+        
         @keyframes crack {
             0% { 
                 transform: scale(1) rotate(0deg);
@@ -93,49 +123,13 @@
             }
         }
         
-        .crack-effect {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(45deg, transparent 48%, white 48%, white 52%, transparent 52%),
-                linear-gradient(-45deg, transparent 48%, white 48%, white 52%, transparent 52%),
-                radial-gradient(circle at 30% 30%, transparent 40%, white 41%, white 42%, transparent 43%),
-                radial-gradient(circle at 70% 70%, transparent 40%, white 41%, white 42%, transparent 43%),
-                radial-gradient(circle at 20% 50%, transparent 40%, white 41%, white 42%, transparent 43%),
-                radial-gradient(circle at 80% 50%, transparent 40%, white 41%, white 42%, transparent 43%),
-                radial-gradient(circle at 50% 20%, transparent 40%, white 41%, white 42%, transparent 43%),
-                radial-gradient(circle at 50% 80%, transparent 40%, white 41%, white 42%, transparent 43%);
-            background-size: 100% 100%;
-            animation: crack 0.6s ease-out forwards;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-        }
-        
-        .crack-effect::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 70%);
-            opacity: 0;
-            animation: crackGlow 0.6s ease-out forwards;
-        }
-        
-        @keyframes crackGlow {
-            0% { opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-        
         .flying-shard {
             position: absolute;
             background: white;
             opacity: 0.8;
             animation: flyShard 0.8s ease-out forwards;
             z-index: 10;
+            will-change: transform, opacity;
         }
         
         @keyframes flyShard {
@@ -149,32 +143,18 @@
             }
         }
         
-        /* Pódio ajustado para 4K */
-        .podium-1 {
-            height: 25vh;
-            background: linear-gradient(to bottom, #ffd700, #f9c712);
-        }
-        
-        .podium-2 {
-            height: 20vh;
-            background: linear-gradient(to bottom, #c0c0c0, #b0b0b0);
-        }
-        
-        .podium-3 {
-            height: 15vh;
-            background: linear-gradient(to bottom, #cd7f32, #b87333);
-        }
-        
-        /* Countdown ajustado */
+        /* Otimizações para o countdown */
         .countdown-container {
             position: relative;
             width: 10vw;
             height: 10vw;
             margin-bottom: 3vh;
+            will-change: transform;
         }
         
         .countdown-svg {
             transform: rotate(-90deg);
+            will-change: transform;
         }
         
         .countdown-circle-bg {
@@ -188,46 +168,11 @@
             stroke-width: 8;
             stroke-linecap: round;
             fill: none;
-            transition: stroke-dashoffset 1s linear;
+            transition: stroke-dashoffset 0.1s linear;
+            will-change: stroke-dashoffset;
         }
         
-        /* Animações */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-1vh); }
-        }
-        
-        .bounce {
-            animation: bounce 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        /* Estilos de medalhas */
-        .medal-gold {
-            color: #ffd700;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
-        }
-        
-        .medal-silver {
-            color: #c0c0c0;
-            text-shadow: 0 0 5px rgba(192, 192, 192, 0.7);
-        }
-        
-        .medal-bronze {
-            color: #cd7f32;
-            text-shadow: 0 0 5px rgba(205, 127, 50, 0.7);
-        }
-        
-        /* Botões ajustados */
+        /* Otimizações para botões */
         .pixel-btn {
             position: relative;
             border: 0.5vw solid #000;
@@ -236,6 +181,8 @@
             font-size: 2vw;
             padding: 2vh 3vw;
             margin: 1vh 0;
+            will-change: transform, box-shadow;
+            transform: translateZ(0);
         }
         
         .pixel-btn:hover {
@@ -248,137 +195,54 @@
             box-shadow: none;
         }
         
-        /* Ranking ajustado */
+        /* Otimizações para o ranking */
         #ranking-list {
             max-height: 40vh;
             overflow-y: auto;
+            will-change: scroll-position;
         }
         
         .ranking-item {
             font-size: 1.8vw;
             padding: 1.5vh 1.5vw;
             margin: 1vh 0;
+            will-change: transform;
         }
         
-        /* Títulos ajustados */
-        h1 {
-            font-size: 4vw;
-            margin-bottom: 4vh;
-        }
-        
-        h2 {
-            font-size: 3vw;
-            margin-bottom: 3vh;
-        }
-        
-        /* Partículas de fundo */
+        /* Otimizações para partículas */
         #particles {
             position: absolute;
             width: 100%;
             height: 100%;
             pointer-events: none;
+            will-change: transform;
         }
         
-        /* Efeito de brilho no texto */
-        .player-name {
-            font-family: 'Bungee', cursive;
-            background: linear-gradient(90deg, #ff8a00, #e52e71, #ff8a00);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            animation: shine 3s linear infinite;
-            letter-spacing: 1px;
-            font-size: 2vw;
-        }
-
-        @keyframes shine {
-            to {
-                background-position: 200% center;
-            }
-        }
-
-        /* Ajuste para o tabuleiro do jogo */
-        #game-board {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5vw;
-            width: 60vw;
-            max-width: none;
+        /* Esconde elementos não visíveis */
+        [class*="screen"]:not(.active-screen) {
+            display: none !important;
         }
         
-        /* Ajuste para o logo */
-        .logo-container {
-            width: 20vw;
-            height: 20vw;
-            margin-bottom: 5vh;
-        }
-        
-        /* Ajuste para o Instagram */
-        .instagram-pixel {
-            width: 6vw;
-            height: 6vw;
-            border-radius: 1.5vw;
-        }
-        
-        .instagram-pixel::before {
-            width: 4vw;
-            height: 4vw;
-            border-radius: 1vw;
-            border: 0.5vw solid white;
-        }
-        
-        .instagram-pixel::after {
-            width: 1.5vw;
-            height: 1.5vw;
-        }
-        
-        /* Barra de rolagem personalizada */
-        #ranking-list::-webkit-scrollbar {
-            width: 0.8vw;
-        }
-        
-        #ranking-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 0.4vw;
-        }
-        
-        #ranking-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 0.4vw;
-        }
-        
-        #ranking-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Ajuste para campos de entrada */
-        input {
-            font-size: 2vw;
-            padding: 1.5vh 2vw;
-            border-radius: 1vw;
-        }
-        
-        label {
-            font-size: 1.8vw;
+        /* Classe para o screen ativo */
+        .active-screen {
+            display: flex !important;
         }
     </style>
 </head>
 <body>
     <div id="app" class="flex flex-col items-center justify-center p-4">
-        <!-- Particle background -->
+        <!-- Particle background simplificado -->
         <div id="particles" class="absolute inset-0 pointer-events-none"></div>
         
         <!-- Tela Inicial -->
-        <div id="start-screen" class="flex flex-col items-center justify-center text-center w-full h-full relative z-10">
-            <!-- Logo -->
+        <div id="start-screen" class="flex flex-col items-center justify-center text-center w-full h-full relative z-10 active-screen">
             <div class="logo-container flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm border-2 border-white/30">
                 <span class="text-8xl">🎮</span>
             </div>
             
-            <h1 class="text-white bounce">JOGO DE REFLEXOS</h1>
+            <h1 class="text-white">JOGO DE REFLEXOS</h1>
             <div class="space-y-4 w-full max-w-xl">
-                <button id="start-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg pulse pixel-btn">
+                <button id="start-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg pixel-btn">
                     JOGAR
                 </button>
                 <button id="ranking-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg pixel-btn">
@@ -452,7 +316,6 @@
         <!-- Tela de Ranking -->
         <div id="ranking-screen" class="hidden w-full h-full flex flex-col items-center justify-start pt-16 px-8 relative z-10">
             <div class="bg-white/10 backdrop-blur-sm p-8 rounded-3xl border border-white/20 w-full max-w-4xl">
-                <!-- Título centralizado -->
                 <div class="ranking-title mb-12">
                     <h2 class="text-5xl font-bold text-yellow-400">RANKING</h2>
                 </div>
@@ -509,49 +372,132 @@
     </div>
 
     <script>
-        // Game state
+        // Game state otimizado
         const gameState = {
             score: 0,
             timeLeft: 20,
             gameInterval: null,
+            countdownInterval: null,
             activeSquares: [],
             isPlaying: false,
             currentPlayer: null,
-            activeSquaresCount: 2
+            activeSquaresCount: 2,
+            lastActivationTime: 0,
+            activationDelay: 800
         };
 
-        // DOM elements
-        const screens = {
-            start: document.getElementById('start-screen'),
-            game: document.getElementById('game-screen'),
-            thanks: document.getElementById('thanks-screen'),
-            name: document.getElementById('name-screen'),
-            ranking: document.getElementById('ranking-screen')
+        // Cache de elementos DOM
+        const elements = {
+            screens: {
+                start: document.getElementById('start-screen'),
+                game: document.getElementById('game-screen'),
+                thanks: document.getElementById('thanks-screen'),
+                name: document.getElementById('name-screen'),
+                ranking: document.getElementById('ranking-screen')
+            },
+            buttons: {
+                start: document.getElementById('start-btn'),
+                ranking: document.getElementById('ranking-btn'),
+                save: document.getElementById('save-btn'),
+                back: document.getElementById('back-btn'),
+                continue: document.getElementById('continue-btn')
+            },
+            game: {
+                board: document.getElementById('game-board'),
+                score: document.getElementById('score'),
+                timeLeft: document.getElementById('time-left'),
+                finalScore: document.getElementById('final-score'),
+                playerName: document.getElementById('player-name'),
+                countdownCircle: document.getElementById('countdown-circle'),
+                particles: document.getElementById('particles')
+            },
+            ranking: {
+                firstPlace: document.getElementById('first-place'),
+                firstScore: document.getElementById('first-score'),
+                secondPlace: document.getElementById('second-place'),
+                secondScore: document.getElementById('second-score'),
+                thirdPlace: document.getElementById('third-place'),
+                thirdScore: document.getElementById('third-score'),
+                list: document.getElementById('ranking-list'),
+                currentPlayer: document.getElementById('current-player'),
+                playerPosition: document.getElementById('player-position')
+            }
         };
 
-        const startBtn = document.getElementById('start-btn');
-        const rankingBtn = document.getElementById('ranking-btn');
-        const saveBtn = document.getElementById('save-btn');
-        const backBtn = document.getElementById('back-btn');
-        const continueBtn = document.getElementById('continue-btn');
-        const gameBoard = document.getElementById('game-board');
-        const scoreDisplay = document.getElementById('score');
-        const timeLeftDisplay = document.getElementById('time-left');
-        const finalScoreDisplay = document.getElementById('final-score');
-        const playerNameInput = document.getElementById('player-name');
-        const countdownCircle = document.getElementById('countdown-circle');
-        const particlesContainer = document.getElementById('particles');
-
-        // Initialize the game
+        // Inicialização otimizada
         function init() {
             createGameBoard();
             setupEventListeners();
             createParticles();
+            
+            // Pré-cria elementos de efeito
+            preCreateEffects();
         }
 
-        // Create particles for background effect
+        // Pré-cria elementos de efeito para reutilização
+        function preCreateEffects() {
+            const effectsContainer = document.createElement('div');
+            effectsContainer.id = 'effects-pool';
+            effectsContainer.style.display = 'none';
+            document.body.appendChild(effectsContainer);
+            
+            // Pré-cria 20 efeitos de crack
+            for (let i = 0; i < 20; i++) {
+                const crack = document.createElement('div');
+                crack.className = 'crack-effect';
+                effectsContainer.appendChild(crack);
+            }
+            
+            // Pré-cria 50 shards
+            for (let i = 0; i < 50; i++) {
+                const shard = document.createElement('div');
+                shard.className = 'flying-shard';
+                effectsContainer.appendChild(shard);
+            }
+        }
+
+        // Obtém um efeito crack do pool
+        function getCrackEffect() {
+            const pool = document.getElementById('effects-pool');
+            const crack = pool.querySelector('.crack-effect');
+            if (crack) {
+                pool.removeChild(crack);
+                return crack;
+            }
+            // Se não tiver no pool, cria um novo (fallback)
+            const newCrack = document.createElement('div');
+            newCrack.className = 'crack-effect';
+            return newCrack;
+        }
+
+        // Obtém um shard do pool
+        function getShard() {
+            const pool = document.getElementById('effects-pool');
+            const shard = pool.querySelector('.flying-shard');
+            if (shard) {
+                pool.removeChild(shard);
+                return shard;
+            }
+            // Se não tiver no pool, cria um novo (fallback)
+            const newShard = document.createElement('div');
+            newShard.className = 'flying-shard';
+            return newShard;
+        }
+
+        // Retorna um efeito para o pool
+        function returnEffectToPool(effect) {
+            const pool = document.getElementById('effects-pool');
+            if (effect && pool) {
+                effect.style.animation = 'none';
+                effect.style.opacity = '0';
+                effect.style.transform = 'scale(1)';
+                pool.appendChild(effect);
+            }
+        }
+
+        // Cria partículas de fundo otimizadas
         function createParticles() {
-            const particleCount = 50;
+            const particleCount = 30; // Reduzido para melhor performance
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -566,142 +512,158 @@
                 
                 const duration = Math.random() * 20 + 10;
                 const delay = Math.random() * 5;
-                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
                 
-                particlesContainer.appendChild(particle);
+                // Usando transform em vez de left/top para melhor performance
+                particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+                
+                elements.game.particles.appendChild(particle);
             }
-            
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes float {
-                    0% { transform: translate(0, 0); }
-                    25% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
-                    50% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
-                    75% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
-                    100% { transform: translate(0, 0); }
-                }
-            `;
-            document.head.appendChild(style);
         }
 
-        // Create the game board with squares
+        // Cria o tabuleiro do jogo otimizado
         function createGameBoard() {
-            gameBoard.innerHTML = '';
-            const squareCount = 16; // 4x4 grid for 4K
+            elements.game.board.innerHTML = '';
+            const squareCount = 16;
+            
+            const fragment = document.createDocumentFragment();
             
             for (let i = 0; i < squareCount; i++) {
                 const square = document.createElement('div');
-                square.className = 'square aspect-square bg-white/90 cursor-pointer';
+                square.className = 'square';
                 square.dataset.index = i;
                 square.addEventListener('click', handleSquareClick);
-                gameBoard.appendChild(square);
+                fragment.appendChild(square);
             }
+            
+            elements.game.board.appendChild(fragment);
         }
 
-        // Set up event listeners
+        // Configura listeners de eventos otimizados
         function setupEventListeners() {
-            startBtn.addEventListener('click', startGame);
-            rankingBtn.addEventListener('click', showRanking);
-            saveBtn.addEventListener('click', saveScore);
-            backBtn.addEventListener('click', showStartScreen);
-            continueBtn.addEventListener('click', showNameScreen);
+            elements.buttons.start.addEventListener('click', startGame);
+            elements.buttons.ranking.addEventListener('click', showRanking);
+            elements.buttons.save.addEventListener('click', saveScore);
+            elements.buttons.back.addEventListener('click', showStartScreen);
+            elements.buttons.continue.addEventListener('click', showNameScreen);
+            
+            // Touch events para melhor resposta em touchscreens
+            elements.game.board.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('square')) {
+                    handleSquareClick({ target: e.target });
+                    e.preventDefault(); // Prevenir scroll
+                }
+            }, { passive: false });
         }
 
-        // Start the game
+        // Inicia o jogo otimizado
         function startGame() {
             showScreen('game');
             resetGame();
             
             gameState.isPlaying = true;
-            gameState.gameInterval = setInterval(updateGame, 1000);
             
-            activateRandomSquares();
-            setInterval(activateRandomSquares, 800);
+            // Usa requestAnimationFrame para melhor sincronização
+            function gameLoop() {
+                if (!gameState.isPlaying) return;
+                
+                const now = performance.now();
+                if (now - gameState.lastActivationTime > gameState.activationDelay) {
+                    activateRandomSquares();
+                    gameState.lastActivationTime = now;
+                }
+                
+                requestAnimationFrame(gameLoop);
+            }
             
+            gameLoop();
+            
+            // Countdown otimizado
             const circumference = 2 * Math.PI * 45;
-            countdownCircle.style.strokeDasharray = circumference;
-            countdownCircle.style.strokeDashoffset = circumference;
+            elements.game.countdownCircle.style.strokeDasharray = circumference;
+            elements.game.countdownCircle.style.strokeDashoffset = circumference;
             
-            const countdownInterval = setInterval(() => {
+            gameState.countdownInterval = setInterval(() => {
                 gameState.timeLeft--;
-                timeLeftDisplay.textContent = gameState.timeLeft;
+                elements.game.timeLeft.textContent = gameState.timeLeft;
                 
                 const offset = circumference * (gameState.timeLeft / 20);
-                countdownCircle.style.strokeDashoffset = offset;
+                elements.game.countdownCircle.style.strokeDashoffset = offset;
                 
                 if (gameState.timeLeft <= 0) {
-                    clearInterval(countdownInterval);
+                    clearInterval(gameState.countdownInterval);
                     endGame();
                 }
             }, 1000);
         }
 
-        // Update game state
-        function updateGame() {
-            scoreDisplay.textContent = gameState.score;
-        }
-
-        // Activate random squares
+        // Ativa quadrados aleatórios otimizado
         function activateRandomSquares() {
             if (!gameState.isPlaying) return;
             
-            const squares = document.querySelectorAll('.square');
+            const squares = elements.game.board.querySelectorAll('.square');
+            const activeCount = gameState.activeSquares.length;
             
+            // Limpa quadrados ativos que não foram clicados
             squares.forEach((square, index) => {
                 if (!gameState.activeSquares.includes(index) && square.classList.contains('active')) {
                     square.classList.remove('active');
                 }
             });
             
-            if (gameState.activeSquares.length >= gameState.activeSquaresCount) {
-                return;
-            }
+            // Se já tem quadrados suficientes ativos, não faz nada
+            if (activeCount >= gameState.activeSquaresCount) return;
             
-            while (gameState.activeSquares.length < gameState.activeSquaresCount) {
-                const inactiveSquares = Array.from(squares)
-                    .map((_, index) => index)
-                    .filter(index => !gameState.activeSquares.includes(index));
+            // Ativa novos quadrados
+            const inactiveSquares = Array.from(squares)
+                .map((_, index) => index)
+                .filter(index => !gameState.activeSquares.includes(index));
+            
+            if (inactiveSquares.length === 0) return;
+            
+            // Ativa até o número máximo de quadrados
+            while (gameState.activeSquares.length < gameState.activeSquaresCount && inactiveSquares.length > 0) {
+                const randomIndex = Math.floor(Math.random() * inactiveSquares.length);
+                const squareIndex = inactiveSquares[randomIndex];
                 
-                if (inactiveSquares.length === 0) break;
+                squares[squareIndex].classList.add('active');
+                gameState.activeSquares.push(squareIndex);
                 
-                const randomIndex = inactiveSquares[Math.floor(Math.random() * inactiveSquares.length)];
-                const square = squares[randomIndex];
-                
-                square.classList.add('active');
-                gameState.activeSquares.push(randomIndex);
+                // Remove do array de inativos
+                inactiveSquares.splice(randomIndex, 1);
             }
         }
 
-        // Handle square click
+        // Manipulador de clique otimizado
         function handleSquareClick(e) {
             if (!gameState.isPlaying) return;
             
             const square = e.target;
             const index = parseInt(square.dataset.index);
             
+            // Verifica se o quadrado está ativo
             if (gameState.activeSquares.includes(index)) {
+                // Pontuação
                 gameState.score++;
-                scoreDisplay.textContent = gameState.score;
+                elements.game.score.textContent = gameState.score;
+                
+                // Remove classe ativa
                 square.classList.remove('active');
                 
-                const crack = document.createElement('div');
-                crack.className = 'crack-effect';
-                square.appendChild(crack);
+                // Efeitos visuais otimizados
+                applySquareEffects(square);
                 
-                createFlyingShards(square);
-                
-                square.classList.add('shake');
-                setTimeout(() => {
-                    square.classList.remove('shake');
-                }, 300);
-                
+                // Remove do array de ativos
                 const squareIndex = gameState.activeSquares.indexOf(index);
                 if (squareIndex > -1) {
                     gameState.activeSquares.splice(squareIndex, 1);
                 }
                 
-                setTimeout(activateRandomSquares, 100);
+                // Aumenta dificuldade progressivamente
+                if (gameState.score % 5 === 0 && gameState.activeSquaresCount < 4) {
+                    gameState.activeSquaresCount++;
+                }
             } else {
+                // Feedback visual para erro
                 square.classList.add('wrong');
                 setTimeout(() => {
                     square.classList.remove('wrong');
@@ -709,16 +671,31 @@
             }
         }
 
-        // Create flying shards effect
+        // Aplica efeitos visuais otimizados
+        function applySquareEffects(square) {
+            // Efeito de crack
+            const crack = getCrackEffect();
+            square.appendChild(crack);
+            
+            // Efeito de shards
+            createFlyingShards(square);
+            
+            // Animação de shake
+            square.classList.add('shake');
+            setTimeout(() => {
+                square.classList.remove('shake');
+                returnEffectToPool(crack);
+            }, 300);
+        }
+
+        // Cria shards voadores otimizados
         function createFlyingShards(square) {
             const rect = square.getBoundingClientRect();
             const colors = ['#ffffff', '#e0f2fe', '#bfdbfe', '#93c5fd'];
-            
-            const shardCount = Math.floor(Math.random() * 5) + 8;
+            const shardCount = 8; // Quantidade fixa para melhor performance
             
             for (let i = 0; i < shardCount; i++) {
-                const shard = document.createElement('div');
-                shard.className = 'flying-shard';
+                const shard = getShard();
                 
                 const size = Math.random() * 20 + 10;
                 const isRect = Math.random() > 0.5;
@@ -753,42 +730,43 @@
                 square.appendChild(shard);
                 
                 setTimeout(() => {
-                    shard.remove();
+                    returnEffectToPool(shard);
                 }, 800);
             }
         }
 
-        // End the game
+        // Finaliza o jogo otimizado
         function endGame() {
             gameState.isPlaying = false;
-            clearInterval(gameState.gameInterval);
+            clearInterval(gameState.countdownInterval);
             
-            document.querySelectorAll('.square').forEach(square => {
+            // Limpa quadrados ativos
+            const squares = elements.game.board.querySelectorAll('.square');
+            squares.forEach(square => {
                 square.classList.remove('active', 'wrong');
             });
+            
             gameState.activeSquares = [];
             
             showScreen('thanks');
         }
 
-        // Show name input screen
+        // Mostra tela de nome
         function showNameScreen() {
-            finalScoreDisplay.textContent = gameState.score;
+            elements.game.finalScore.textContent = gameState.score;
             showScreen('name');
         }
 
-        // Save player score
+        // Salva pontuação otimizado
         function saveScore() {
-            const name = playerNameInput.value.trim();
+            const name = elements.game.playerName.value.trim();
             if (!name) {
                 alert('POR FAVOR, DIGITE SEU NOME!');
                 return;
             }
             
-            const trimmedName = name.substring(0, 20);
-            
             gameState.currentPlayer = {
-                name: trimmedName.toUpperCase(),
+                name: name.substring(0, 20).toUpperCase(),
                 score: gameState.score
             };
             
@@ -796,13 +774,15 @@
             showRanking();
         }
 
-        // Save to localStorage
+        // Salva no localStorage otimizado
         function saveToLocalStorage(player) {
             let ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
             ranking.push(player);
             
+            // Ordena apenas os novos elementos se possível
             ranking.sort((a, b) => b.score - a.score);
             
+            // Mantém apenas os top 50
             if (ranking.length > 50) {
                 ranking = ranking.slice(0, 50);
             }
@@ -810,28 +790,39 @@
             localStorage.setItem('reflexGameRanking', JSON.stringify(ranking));
         }
 
-        // Show ranking screen
+        // Mostra ranking otimizado
         function showRanking() {
             showScreen('ranking');
             const ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
             
+            // Atualiza os 3 primeiros lugares
             if (ranking.length > 0) {
-                document.getElementById('first-place').textContent = ranking[0].name;
-                document.getElementById('first-score').textContent = `${ranking[0].score} pts`;
+                elements.ranking.firstPlace.textContent = ranking[0].name;
+                elements.ranking.firstScore.textContent = `${ranking[0].score} pts`;
             }
             
             if (ranking.length > 1) {
-                document.getElementById('second-place').textContent = ranking[1].name;
-                document.getElementById('second-score').textContent = `${ranking[1].score} pts`;
+                elements.ranking.secondPlace.textContent = ranking[1].name;
+                elements.ranking.secondScore.textContent = `${ranking[1].score} pts`;
             }
             
             if (ranking.length > 2) {
-                document.getElementById('third-place').textContent = ranking[2].name;
-                document.getElementById('third-score').textContent = `${ranking[2].score} pts`;
+                elements.ranking.thirdPlace.textContent = ranking[2].name;
+                elements.ranking.thirdScore.textContent = `${ranking[2].score} pts`;
             }
             
-            const rankingList = document.getElementById('ranking-list');
-            rankingList.innerHTML = '';
+            // Atualiza a lista de ranking
+            updateRankingList(ranking);
+            
+            // Mostra a posição do jogador atual se existir
+            if (gameState.currentPlayer) {
+                showCurrentPlayerPosition(ranking);
+            }
+        }
+
+        // Atualiza a lista de ranking otimizada
+        function updateRankingList(ranking) {
+            const fragment = document.createDocumentFragment();
             
             for (let i = 3; i < Math.min(10, ranking.length); i++) {
                 const player = ranking[i];
@@ -854,67 +845,69 @@
                 item.appendChild(name);
                 item.appendChild(score);
                 
-                rankingList.appendChild(item);
+                fragment.appendChild(item);
             }
             
-            if (gameState.currentPlayer) {
-                const currentPlayerContainer = document.getElementById('current-player');
-                const playerPositionElement = document.getElementById('player-position');
+            elements.ranking.list.innerHTML = '';
+            elements.ranking.list.appendChild(fragment);
+        }
+
+        // Mostra posição do jogador atual
+        function showCurrentPlayerPosition(ranking) {
+            const playerIndex = ranking.findIndex(p => 
+                p.name === gameState.currentPlayer.name && 
+                p.score === gameState.currentPlayer.score
+            );
+            
+            if (playerIndex !== -1) {
+                elements.ranking.currentPlayer.classList.remove('hidden');
                 
-                const playerIndex = ranking.findIndex(p => 
-                    p.name === gameState.currentPlayer.name && 
-                    p.score === gameState.currentPlayer.score
-                );
+                let positionText = `${playerIndex + 1}º`;
+                if (playerIndex === 0) positionText = '🥇 1º';
+                else if (playerIndex === 1) positionText = '🥈 2º';
+                else if (playerIndex === 2) positionText = '🥉 3º';
                 
-                if (playerIndex !== -1) {
-                    currentPlayerContainer.classList.remove('hidden');
-                    
-                    let positionText = `${playerIndex + 1}º`;
-                    if (playerIndex === 0) positionText = '🥇 1º';
-                    else if (playerIndex === 1) positionText = '🥈 2º';
-                    else if (playerIndex === 2) positionText = '🥉 3º';
-                    
-                    playerPositionElement.innerHTML = `
-                        <span class="player-position">${positionText}</span> - 
-                        <span class="current-player-name">${gameState.currentPlayer.name}</span> 
-                        (<span class="player-score">${gameState.currentPlayer.score} pts</span>)
-                    `;
-                }
+                elements.ranking.playerPosition.innerHTML = `
+                    <span class="player-position">${positionText}</span> - 
+                    <span class="current-player-name">${gameState.currentPlayer.name}</span>
+                    (<span class="player-score">${gameState.currentPlayer.score} pts</span>)
+                `;
             }
         }
 
-        // Reset game state
+        // Reseta o jogo
         function resetGame() {
             gameState.score = 0;
             gameState.timeLeft = 20;
             gameState.activeSquares = [];
             gameState.isPlaying = false;
+            gameState.activeSquaresCount = 2;
             
-            scoreDisplay.textContent = '0';
-            timeLeftDisplay.textContent = '20';
-            playerNameInput.value = '';
+            elements.game.score.textContent = '0';
+            elements.game.timeLeft.textContent = '20';
+            elements.game.playerName.value = '';
             
             const circumference = 2 * Math.PI * 45;
-            countdownCircle.style.strokeDasharray = circumference;
-            countdownCircle.style.strokeDashoffset = circumference;
+            elements.game.countdownCircle.style.strokeDasharray = circumference;
+            elements.game.countdownCircle.style.strokeDashoffset = circumference;
         }
 
-        // Show specific screen
+        // Mostra uma tela específica
         function showScreen(screenName) {
-            Object.values(screens).forEach(screen => {
-                screen.classList.add('hidden');
+            Object.values(elements.screens).forEach(screen => {
+                screen.classList.remove('active-screen');
             });
             
-            screens[screenName].classList.remove('hidden');
+            elements.screens[screenName].classList.add('active-screen');
         }
 
-        // Show start screen
+        // Mostra tela inicial
         function showStartScreen() {
             showScreen('start');
             resetGame();
         }
 
-        // Initialize the game when DOM is loaded
+        // Inicializa o jogo quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
