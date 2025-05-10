@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-size: 1.5vw;
+            font-size: 1.5vw; /* Tamanho de fonte base responsivo */
         }
         
         body {
@@ -55,7 +55,6 @@
             position: relative;
             overflow: hidden;
             border-radius: 1vw;
-            will-change: transform, background-color;
         }
         
         .square.active {
@@ -111,7 +110,6 @@
             animation: crack 0.6s ease-out forwards;
             pointer-events: none;
             mix-blend-mode: overlay;
-            will-change: transform, opacity;
         }
         
         .crack-effect::before {
@@ -138,7 +136,6 @@
             opacity: 0.8;
             animation: flyShard 0.8s ease-out forwards;
             z-index: 10;
-            will-change: transform, opacity;
         }
         
         @keyframes flyShard {
@@ -192,7 +189,6 @@
             stroke-linecap: round;
             fill: none;
             transition: stroke-dashoffset 1s linear;
-            will-change: stroke-dashoffset;
         }
         
         /* Animações */
@@ -302,7 +298,7 @@
                 background-position: 200% center;
             }
         }
-        
+
         /* Ajuste para o tabuleiro do jogo */
         #game-board {
             grid-template-columns: repeat(4, 1fr);
@@ -472,7 +468,7 @@
                             <div class="mt-2 medal-silver text-4xl">🥈</div>
                         </div>
                     </div>
-                    
+                                    
                     <div class="flex flex-col items-center">
                         <div class="podium-1 w-40 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">1º</span>
@@ -483,7 +479,7 @@
                             <div class="mt-2 medal-gold text-4xl">🥇</div>
                         </div>
                     </div>
-                    
+                                    
                     <div class="flex flex-col items-center">
                         <div class="podium-3 w-32 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">3º</span>
@@ -521,28 +517,32 @@
             activeSquares: [],
             isPlaying: false,
             currentPlayer: null,
-            activeSquaresCount: 2,
-            lastActivationTime: 0
+            minActiveSquares: 2,
+            maxActiveSquares: 3,
+            squareActivationInterval: null
         };
 
-        // Cache de elementos DOM
-        const elements = {
-            screens: {
-                start: document.getElementById('start-screen'),
-                game: document.getElementById('game-screen'),
-                thanks: document.getElementById('thanks-screen'),
-                name: document.getElementById('name-screen'),
-                ranking: document.getElementById('ranking-screen')
-            },
-            game: {
-                board: document.getElementById('game-board'),
-                score: document.getElementById('score'),
-                timeLeft: document.getElementById('time-left'),
-                finalScore: document.getElementById('final-score'),
-                playerName: document.getElementById('player-name'),
-                countdownCircle: document.getElementById('countdown-circle')
-            }
+        // DOM elements
+        const screens = {
+            start: document.getElementById('start-screen'),
+            game: document.getElementById('game-screen'),
+            thanks: document.getElementById('thanks-screen'),
+            name: document.getElementById('name-screen'),
+            ranking: document.getElementById('ranking-screen')
         };
+
+        const startBtn = document.getElementById('start-btn');
+        const rankingBtn = document.getElementById('ranking-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const backBtn = document.getElementById('back-btn');
+        const continueBtn = document.getElementById('continue-btn');
+        const gameBoard = document.getElementById('game-board');
+        const scoreDisplay = document.getElementById('score');
+        const timeLeftDisplay = document.getElementById('time-left');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const playerNameInput = document.getElementById('player-name');
+        const countdownCircle = document.getElementById('countdown-circle');
+        const particlesContainer = document.getElementById('particles');
 
         // Initialize the game
         function init() {
@@ -553,7 +553,7 @@
 
         // Create particles for background effect
         function createParticles() {
-            const particleCount = 30; // Reduzido para melhor performance
+            const particleCount = 50;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -570,84 +570,84 @@
                 const delay = Math.random() * 5;
                 particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
                 
-                document.getElementById('particles').appendChild(particle);
+                particlesContainer.appendChild(particle);
             }
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% { transform: translate(0, 0); }
+                    25% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
+                    50% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
+                    75% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); }
+                    100% { transform: translate(0, 0); }
+                }
+            `;
+            document.head.appendChild(style);
         }
 
         // Create the game board with squares
         function createGameBoard() {
-            elements.game.board.innerHTML = '';
-            const squareCount = 16;
+            gameBoard.innerHTML = '';
+            const squareCount = 16; // 4x4 grid for 4K
             
             for (let i = 0; i < squareCount; i++) {
                 const square = document.createElement('div');
                 square.className = 'square aspect-square bg-white/90 cursor-pointer';
                 square.dataset.index = i;
                 square.addEventListener('click', handleSquareClick);
-                elements.game.board.appendChild(square);
+                gameBoard.appendChild(square);
             }
         }
 
         // Set up event listeners
         function setupEventListeners() {
-            document.getElementById('start-btn').addEventListener('click', startGame);
-            document.getElementById('ranking-btn').addEventListener('click', showRanking);
-            document.getElementById('save-btn').addEventListener('click', saveScore);
-            document.getElementById('back-btn').addEventListener('click', showStartScreen);
-            document.getElementById('continue-btn').addEventListener('click', showNameScreen);
-            
-            // Touch events para melhor resposta em touchscreens
-            elements.game.board.addEventListener('touchstart', function(e) {
-                if (e.target.classList.contains('square')) {
-                    handleSquareClick({ target: e.target });
-                    e.preventDefault();
-                }
-            }, { passive: false });
+            startBtn.addEventListener('click', startGame);
+            rankingBtn.addEventListener('click', showRanking);
+            saveBtn.addEventListener('click', saveScore);
+            backBtn.addEventListener('click', showStartScreen);
+            continueBtn.addEventListener('click', showNameScreen);
         }
 
         // Start the game
         function startGame() {
-            // Esconde a tela inicial e mostra a do jogo
-            elements.screens.start.classList.add('hidden');
-            elements.screens.game.classList.remove('hidden');
-            
+            showScreen('game');
             resetGame();
             
             gameState.isPlaying = true;
+            gameState.gameInterval = setInterval(updateGame, 1000);
             
-            // Usa requestAnimationFrame para melhor performance
-            function gameLoop() {
-                if (!gameState.isPlaying) return;
-                
-                const now = performance.now();
-                if (now - gameState.lastActivationTime > 800) {
+            // Start with 2-3 active squares
+            activateRandomSquares();
+            
+            // Set up interval to maintain 2-3 active squares
+            gameState.squareActivationInterval = setInterval(() => {
+                if (gameState.activeSquares.length < gameState.minActiveSquares) {
                     activateRandomSquares();
-                    gameState.lastActivationTime = now;
                 }
-                
-                requestAnimationFrame(gameLoop);
-            }
+            }, 500);
             
-            gameLoop();
-            
-            // Configura o countdown
             const circumference = 2 * Math.PI * 45;
-            elements.game.countdownCircle.style.strokeDasharray = circumference;
-            elements.game.countdownCircle.style.strokeDashoffset = circumference;
+            countdownCircle.style.strokeDasharray = circumference;
+            countdownCircle.style.strokeDashoffset = circumference;
             
-            // Intervalo do countdown
-            gameState.gameInterval = setInterval(() => {
+            const countdownInterval = setInterval(() => {
                 gameState.timeLeft--;
-                elements.game.timeLeft.textContent = gameState.timeLeft;
+                timeLeftDisplay.textContent = gameState.timeLeft;
                 
                 const offset = circumference * (gameState.timeLeft / 20);
-                elements.game.countdownCircle.style.strokeDashoffset = offset;
+                countdownCircle.style.strokeDashoffset = offset;
                 
                 if (gameState.timeLeft <= 0) {
-                    clearInterval(gameState.gameInterval);
+                    clearInterval(countdownInterval);
                     endGame();
                 }
             }, 1000);
+        }
+
+        // Update game state
+        function updateGame() {
+            scoreDisplay.textContent = gameState.score;
         }
 
         // Activate random squares
@@ -656,17 +656,22 @@
             
             const squares = document.querySelectorAll('.square');
             
-            // Remove squares that weren't clicked
+            // Remove squares that are no longer active
             squares.forEach((square, index) => {
                 if (!gameState.activeSquares.includes(index) && square.classList.contains('active')) {
                     square.classList.remove('active');
                 }
             });
             
-            // If already have enough active squares, return
-            if (gameState.activeSquares.length >= gameState.activeSquaresCount) {
-                return;
-            }
+            // Determine how many squares to activate (between min and max)
+            const squaresToActivate = Math.max(0, 
+                Math.min(
+                    gameState.maxActiveSquares - gameState.activeSquares.length,
+                    squares.length - gameState.activeSquares.length
+                )
+            );
+            
+            if (squaresToActivate <= 0) return;
             
             // Get inactive squares
             const inactiveSquares = Array.from(squares)
@@ -676,14 +681,17 @@
             if (inactiveSquares.length === 0) return;
             
             // Activate new squares
-            while (gameState.activeSquares.length < gameState.activeSquaresCount && inactiveSquares.length > 0) {
+            for (let i = 0; i < squaresToActivate; i++) {
+                if (inactiveSquares.length === 0) break;
+                
                 const randomIndex = Math.floor(Math.random() * inactiveSquares.length);
                 const squareIndex = inactiveSquares[randomIndex];
+                const square = squares[squareIndex];
                 
-                squares[squareIndex].classList.add('active');
+                square.classList.add('active');
                 gameState.activeSquares.push(squareIndex);
                 
-                // Remove from inactive array
+                // Remove from inactive squares
                 inactiveSquares.splice(randomIndex, 1);
             }
         }
@@ -696,48 +704,36 @@
             const index = parseInt(square.dataset.index);
             
             if (gameState.activeSquares.includes(index)) {
-                // Correct click
                 gameState.score++;
-                elements.game.score.textContent = gameState.score;
+                scoreDisplay.textContent = gameState.score;
                 square.classList.remove('active');
                 
-                // Apply visual effects
-                applySquareEffects(square);
+                const crack = document.createElement('div');
+                crack.className = 'crack-effect';
+                square.appendChild(crack);
                 
-                // Remove from active squares
+                createFlyingShards(square);
+                
+                square.classList.add('shake');
+                setTimeout(() => {
+                    square.classList.remove('shake');
+                }, 300);
+                
                 const squareIndex = gameState.activeSquares.indexOf(index);
                 if (squareIndex > -1) {
                     gameState.activeSquares.splice(squareIndex, 1);
                 }
                 
-                // Increase difficulty progressively
-                if (gameState.score % 5 === 0 && gameState.activeSquaresCount < 4) {
-                    gameState.activeSquaresCount++;
-                }
+                // Activate a new square immediately to maintain the count
+                setTimeout(() => {
+                    activateRandomSquares();
+                }, 100);
             } else {
-                // Wrong click
                 square.classList.add('wrong');
                 setTimeout(() => {
                     square.classList.remove('wrong');
                 }, 300);
             }
-        }
-
-        // Apply visual effects to square
-        function applySquareEffects(square) {
-            // Crack effect
-            const crack = document.createElement('div');
-            crack.className = 'crack-effect';
-            square.appendChild(crack);
-            
-            // Flying shards
-            createFlyingShards(square);
-            
-            // Shake animation
-            square.classList.add('shake');
-            setTimeout(() => {
-                square.classList.remove('shake');
-            }, 300);
         }
 
         // Create flying shards effect
@@ -793,35 +789,34 @@
         function endGame() {
             gameState.isPlaying = false;
             clearInterval(gameState.gameInterval);
+            clearInterval(gameState.squareActivationInterval);
             
-            // Clear active squares
             document.querySelectorAll('.square').forEach(square => {
                 square.classList.remove('active', 'wrong');
             });
             gameState.activeSquares = [];
             
-            // Show thanks screen
-            elements.screens.game.classList.add('hidden');
-            elements.screens.thanks.classList.remove('hidden');
+            showScreen('thanks');
         }
 
         // Show name input screen
         function showNameScreen() {
-            elements.game.finalScore.textContent = gameState.score;
-            elements.screens.thanks.classList.add('hidden');
-            elements.screens.name.classList.remove('hidden');
+            finalScoreDisplay.textContent = gameState.score;
+            showScreen('name');
         }
 
         // Save player score
         function saveScore() {
-            const name = elements.game.playerName.value.trim();
+            const name = playerNameInput.value.trim();
             if (!name) {
                 alert('POR FAVOR, DIGITE SEU NOME!');
                 return;
             }
             
+            const trimmedName = name.substring(0, 20);
+            
             gameState.currentPlayer = {
-                name: name.substring(0, 20).toUpperCase(),
+                name: trimmedName.toUpperCase(),
                 score: gameState.score
             };
             
@@ -834,10 +829,8 @@
             let ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
             ranking.push(player);
             
-            // Sort by score (descending)
             ranking.sort((a, b) => b.score - a.score);
             
-            // Keep only top 50
             if (ranking.length > 50) {
                 ranking = ranking.slice(0, 50);
             }
@@ -847,17 +840,9 @@
 
         // Show ranking screen
         function showRanking() {
-            // Hide all screens first
-            Object.values(elements.screens).forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            
-            // Show ranking screen
-            elements.screens.ranking.classList.remove('hidden');
-            
+            showScreen('ranking');
             const ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
             
-            // Update top 3
             if (ranking.length > 0) {
                 document.getElementById('first-place').textContent = ranking[0].name;
                 document.getElementById('first-score').textContent = `${ranking[0].score} pts`;
@@ -873,7 +858,6 @@
                 document.getElementById('third-score').textContent = `${ranking[2].score} pts`;
             }
             
-            // Update ranking list
             const rankingList = document.getElementById('ranking-list');
             rankingList.innerHTML = '';
             
@@ -901,7 +885,6 @@
                 rankingList.appendChild(item);
             }
             
-            // Show current player position if exists
             if (gameState.currentPlayer) {
                 const currentPlayerContainer = document.getElementById('current-player');
                 const playerPositionElement = document.getElementById('player-position');
@@ -934,22 +917,33 @@
             gameState.timeLeft = 20;
             gameState.activeSquares = [];
             gameState.isPlaying = false;
-            gameState.activeSquaresCount = 2;
             
-            elements.game.score.textContent = '0';
-            elements.game.timeLeft.textContent = '20';
-            elements.game.playerName.value = '';
+            scoreDisplay.textContent = '0';
+            timeLeftDisplay.textContent = '20';
+            playerNameInput.value = '';
+            
+            const circumference = 2 * Math.PI * 45;
+            countdownCircle.style.strokeDasharray = circumference;
+            countdownCircle.style.strokeDashoffset = circumference;
+            
+            if (gameState.squareActivationInterval) {
+                clearInterval(gameState.squareActivationInterval);
+                gameState.squareActivationInterval = null;
+            }
+        }
+
+        // Show specific screen
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            screens[screenName].classList.remove('hidden');
         }
 
         // Show start screen
         function showStartScreen() {
-            // Hide all screens first
-            Object.values(elements.screens).forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            
-            // Show start screen
-            elements.screens.start.classList.remove('hidden');
+            showScreen('start');
             resetGame();
         }
 
