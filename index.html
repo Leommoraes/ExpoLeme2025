@@ -384,7 +384,7 @@
                 <span class="text-8xl">🎮</span>
             </div>
             
-            <h1 class="text-white bounce">JOGO DE REFLEXOS</h1>
+            <h1 class="text-white bounce text-6xl">VM TAP</h1>
             <div class="space-y-4 w-full max-w-xl">
                 <button id="start-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg pulse pixel-btn">
                     JOGAR
@@ -715,12 +715,6 @@
                 gameState.score++;
                 scoreDisplay.textContent = gameState.score;
                 square.classList.toggle('active', false);
-                
-                const crack = document.createElement('div');
-                crack.className = 'crack-effect';
-                square.appendChild(crack);
-                
-                createFlyingShards(square);
                 
                 square.classList.add('shake');
                 setTimeout(() => {
