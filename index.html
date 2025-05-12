@@ -6,6 +6,7 @@
     <title>Jogo de Reflexos - Visual Mídia Leme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Reset para tela 4K */
         html, body {
@@ -72,6 +73,12 @@
         .square.wrong {
             background-color: #ef4444;
             transform: scale(0.95);
+            animation: wrongFlash 0.2s ease-out;
+        }
+
+        @keyframes wrongFlash {
+            0%, 100% { background-color: #ef4444; }
+            50% { background-color: #ff0000; }
         }
         
         /* Efeitos de animação */
@@ -382,8 +389,21 @@
         .ranking-back-btn {
             position: absolute;
             top: 2vh;
-            left: 2vw;
+            right: 2vw;
             z-index: 20;
+            width: 4vw;
+            height: 4vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Centralizar título do ranking */
+        .ranking-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3vh;
         }
     </style>
 </head>
@@ -475,13 +495,13 @@
         <!-- Tela de Ranking -->
         <div id="ranking-screen" class="hidden w-full h-full flex flex-col items-center justify-start pt-16 px-8 relative z-10">
             <!-- Botão de voltar -->
-            <button id="ranking-back-btn" class="ranking-back-btn bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg pixel-btn">
-                VOLTAR
+            <button id="ranking-back-btn" class="ranking-back-btn bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-home text-2xl"></i>
             </button>
             
             <div class="bg-white/10 backdrop-blur-sm p-8 rounded-3xl border border-white/20 w-full max-w-4xl">
                 <!-- Título centralizado -->
-                <div class="ranking-title mb-12">
+                <div class="ranking-header">
                     <h2 class="text-5xl font-bold text-yellow-400">RANKING</h2>
                 </div>
                                 
@@ -648,10 +668,10 @@
                 square.className = 'square aspect-square bg-white/90 cursor-pointer';
                 square.dataset.index = i;
                 
-                // Optimized click handler with double click prevention
+                // Optimized click handler with immediate response
                 square.addEventListener('click', function(e) {
                     const now = Date.now();
-                    if (now - gameState.lastClickTime < 300) return; // Prevent rapid clicks
+                    if (now - gameState.lastClickTime < 50) return; // Prevent rapid clicks (50ms threshold)
                     gameState.lastClickTime = now;
                     handleSquareClick(e);
                 }, { passive: true });
@@ -714,7 +734,7 @@
                 if (gameState.activeSquares.length < gameState.minActiveSquares) {
                     activateRandomSquares();
                 }
-            }, 300); // Reduced interval for faster response
+            }, 200); // Reduced interval for faster response (200ms)
                         
             const circumference = 2 * Math.PI * 45;
             countdownCircle.style.strokeDasharray = circumference;
@@ -810,12 +830,13 @@
                 // Activate a new square immediately to maintain the count
                 setTimeout(() => {
                     activateRandomSquares();
-                }, 50); // Reduced delay for faster response
+                }, 0); // No delay for immediate response
             } else {
+                // Flash red for wrong click
                 square.classList.add('wrong');
                 setTimeout(() => {
                     square.classList.remove('wrong');
-                }, 300);
+                }, 200);
             }
         }
 
