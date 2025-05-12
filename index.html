@@ -353,7 +353,7 @@
             }
         }
 
-        /* Ajuste para o tabuleiro do jogo */
+        /* Ajuste para tabuleiro do jogo */
         #game-board {
             grid-template-columns: repeat(4, 1fr);
             gap: 1.5vw;
@@ -366,6 +366,16 @@
             width: 20vw;
             height: 20vw;
             margin-bottom: 5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
         /* Ajuste para o Instagram */
@@ -386,6 +396,7 @@
             width: 1.5vw;
             height: 1.5vw;
         }
+
 
         /* Barra de rolagem personalizada */
         #ranking-list::-webkit-scrollbar {
@@ -493,7 +504,7 @@
         <!-- Tela Inicial -->
         <div id="start-screen" class="flex flex-col items-center justify-center text-center w-full h-full relative z-10">
             <!-- Logo -->
-           <div class="logo-container flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm border-2 border-white/30">
+            <div class="logo-container flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm border-2 border-white/30">
                 <!-- Espaço para a logo da escola (substitua pelo seu código de imagem) -->
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo9TY0cHKsQJaxM0dSpUZA-r-N_k1lkUU_ig&s" alt="Logo da Escola" class="logo-img">
             </div>
@@ -509,7 +520,6 @@
             </div>
             <div class="absolute bottom-8 text-white/80 text-xl">
                 Siga nosso Instagram: <span class="font-bold">@visualmidialeme</span>
-            </div>
         </div>
 
         <!-- Tela do Jogo -->
