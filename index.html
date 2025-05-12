@@ -353,7 +353,7 @@
             }
         }
 
-        /* Ajuste para tabuleiro do jogo */
+        /* Ajuste para o tabuleiro do jogo */
         #game-board {
             grid-template-columns: repeat(4, 1fr);
             gap: 1.5vw;
@@ -366,18 +366,7 @@
             width: 20vw;
             height: 20vw;
             margin-bottom: 5vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
         }
-
-        .logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Preenche o círculo mantendo proporção e sem sobras */
-    border-radius: 50%; /* Garante que a imagem também fique circular */
-}
 
         /* Ajuste para o Instagram */
         .instagram-pixel {
@@ -397,7 +386,6 @@
             width: 1.5vw;
             height: 1.5vw;
         }
-
 
         /* Barra de rolagem personalizada */
         #ranking-list::-webkit-scrollbar {
@@ -490,12 +478,15 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        /* NOVO ESTILO PARA POSICIONAR OS ELEMENTOS MAIS ALTOS NA TELA INICIAL */
-        #start-screen {
-            transform: translateY(-10vh); /* Move todos os elementos 10vh para cima */
-        }
-    </style>
+    
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+</style>
 </head>
 <body>
     <div id="app" class="flex flex-col items-center justify-center p-4">
@@ -506,7 +497,6 @@
         <div id="start-screen" class="flex flex-col items-center justify-center text-center w-full h-full relative z-10">
             <!-- Logo -->
             <div class="logo-container flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm border-2 border-white/30">
-                <!-- Espaço para a logo da escola (substitua pelo seu código de imagem) -->
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo9TY0cHKsQJaxM0dSpUZA-r-N_k1lkUU_ig&s" alt="Logo da Escola" class="logo-img">
             </div>
                                     
@@ -521,6 +511,7 @@
             </div>
             <div class="absolute bottom-0 text-white/80 text-xl">
                 Siga nosso Instagram: <span class="font-bold">@visualmidialeme</span>
+            </div>
         </div>
 
         <!-- Tela do Jogo -->
@@ -603,7 +594,7 @@
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
                             <span id="second-place" class="block font-bold text-2xl truncate px-2 second-place-name">---</span>
                             <span id="second-score" class="text-xl player-score">0 pts</span>
-                            <div class="mt-2 medal-silver text-4xl">🥈</div>
+                            <div class="mt-2 medal-silver text-4xl">??</div>
                         </div>
                     </div>
                                                                                                     
@@ -614,7 +605,7 @@
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
                             <span id="first-place" class="block font-bold text-2xl truncate px-2 first-place-name">---</span>
                             <span id="first-score" class="text-xl player-score">0 pts</span>
-                            <div class="mt-2 medal-gold text-4xl">🥇</div>
+                            <div class="mt-2 medal-gold text-4xl">??</div>
                         </div>
                     </div>
                                                                                                     
@@ -625,7 +616,7 @@
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
                             <span id="third-place" class="block font-bold text-2xl truncate px-2 third-place-name">---</span>
                             <span id="third-score" class="text-xl player-score">0 pts</span>
-                            <div class="mt-2 medal-bronze text-4xl">🥉</div>
+                            <div class="mt-2 medal-bronze text-4xl">??</div>
                         </div>
                     </div>
                 </div>
