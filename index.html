@@ -278,6 +278,39 @@
             font-size: 1.8vw;
             padding: 1.5vh 1.5vw;
             margin: 1vh 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 1vw;
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .player-position {
+            font-weight: bold;
+            width: 16%;
+            text-align: center;
+        }
+
+        .player-name {
+            font-weight: bold;
+            flex: 1;
+            padding: 0 1.5vw;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-score {
+            color: white;
+            width: 24%;
+            text-align: right;
         }
 
         /* Títulos ajustados */
@@ -311,7 +344,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             animation: shine 3s linear infinite;
             letter-spacing: 1px;
-            font-size: 2vw;
+            font-size: 1.8vw;
         }
 
         @keyframes shine {
@@ -410,7 +443,7 @@
         .player-outside-top {
             background: rgba(59, 130, 246, 0.3) !important;
             border: none;
-            margin-top: 0;
+            margin-top: 2vh;
             padding: 1.5vh 1.5vw;
             border-radius: 1vw;
             font-size: 1.8vw;
@@ -418,30 +451,32 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
+            transition: all 0.3s ease;
         }
 
-        .player-outside-top h3 {
-            display: none; /* Removemos o título pois não é mais necessário */
+        .player-outside-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .current-player-name {
-            color: white;
+            font-family: 'Bungee', cursive;
+            background: linear-gradient(90deg, #ff8a00, #e52e71, #ff8a00);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: shine 3s linear infinite;
+            letter-spacing: 1px;
+            font-size: 1.8vw;
             font-weight: bold;
             flex: 1;
             padding: 0 1.5vw;
             text-align: left;
-        }
-
-        .player-position {
-            font-weight: bold;
-            width: 16%;
-            text-align: center;
-        }
-
-        .player-score {
-            color: white;
-            width: 24%;
-            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -583,7 +618,7 @@
                 </div>
 
                 <!-- Container para jogador fora do top 10 - AGORA COM ESTILO IGUAL ÀS OUTRAS BARRAS -->
-                <div id="player-outside-top" class="hidden w-full bg-gray-700/30 p-4 rounded-xl ranking-item">
+                <div id="player-outside-top" class="hidden w-full ranking-item">
                     <div class="player-position font-bold w-16 text-center"></div>
                     <div class="current-player-name font-bold flex-1 px-4 truncate"></div>
                     <div class="player-score w-24 text-right"></div>
@@ -960,18 +995,18 @@
             for (let i = 3; i < Math.min(10, ranking.length); i++) {
                 const player = ranking[i];
                 const item = document.createElement('div');
-                item.className = 'flex items-center justify-between bg-gray-700/30 p-4 rounded-xl ranking-item';
+                item.className = 'ranking-item';
                                                         
                 const position = document.createElement('div');
-                position.className = 'player-position font-bold w-16 text-center';
+                position.className = 'player-position';
                 position.textContent = `${i+1}º`;
                                                         
                 const name = document.createElement('div');
-                name.className = 'player-name font-bold flex-1 px-4 truncate';
+                name.className = 'player-name';
                 name.textContent = player.name;
                                                         
                 const score = document.createElement('div');
-                score.className = 'player-score w-24 text-right';
+                score.className = 'player-score';
                 score.textContent = `${player.score} pts`;
                                                         
                 item.appendChild(position);
