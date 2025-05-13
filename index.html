@@ -211,12 +211,13 @@
 
         /* Animações */
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-1vh); }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
         }
 
         .bounce {
-            animation: bounce 1.5s infinite;
+            animation: bounce 2s infinite;
         }
 
         @keyframes pulse {
@@ -330,7 +331,7 @@
         h2 {
             font-size: 3vw;
             margin-bottom: 2vh;
-        }
+}
 
         /* Partículas de fundo */
         #particles {
@@ -481,13 +482,14 @@
         .podium-container {
             margin-bottom: 2vh;
         }
-        
+
         /* Estilos para o QR Code na tela inicial */
-        .qr-container {
+        .qr-code-container {
             position: fixed;
             top: 2vh;
             right: 2vw;
             z-index: 9999;
+            font-family: 'Press Start 2P', cursive;
             background: rgba(0, 0, 0, 0.7);
             padding: 2vh 2vw;
             border-radius: 1vw;
@@ -497,61 +499,77 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            animation: pulse 2s infinite;
+            animation: pulseGlow 2s infinite alternate;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
-        
-        .qr-container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-        
-        .qr-title {
-            font-family: 'Press Start 2P', cursive;
+
+        .qr-code-container .title {
             font-size: 1.4vw;
             margin-bottom: 1vh;
             color: white;
             text-align: center;
-            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
-        
-        .qr-image {
+
+        .qr-code-container .qr-image {
             width: 18vw;
             max-width: 250px;
             display: block;
             border: 2px solid white;
-            border-radius: 0.5vw;
+            border-radius: 1vw;
+            animation: bounce 2s infinite;
         }
-        
-        /* Estilos para o QR Code pequeno em outras telas */
-        .qr-mini {
+
+        .qr-code-container .subtitle {
+            font-size: 1vw;
+            margin-top: 1vh;
+            color: #3b82f6;
+            text-align: center;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 25px rgba(0,0,0,0.6);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 35px rgba(59, 130, 246, 0.8);
+                border-color: rgba(59, 130, 246, 0.7);
+            }
+        }
+
+        /* Estilos para o QR Code na tela de jogo (aumentado) */
+        .qr-code-game {
             position: fixed;
-            top: 1vh;
-            right: 1vw;
+            top: 2vh;
+            right: 2vw;
             z-index: 9999;
-            width: 8vw;
-            max-width: 100px;
+            width: 15vw;
+            max-width: 200px;
             border: 2px solid white;
-            border-radius: 0.5vw;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border-radius: 1vw;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
             transition: all 0.3s ease;
         }
-        
-        .qr-mini:hover {
-            transform: scale(1.1);
+
+        .qr-code-game:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.9);
         }
     </style>
 </head>
 <body>
-    <!-- QR Code na tela inicial -->
-    <div id="qr-instagram-destaque" class="qr-container">
-        <div class="qr-title">SIGA-NOS NO INSTAGRAM</div>
+    <!-- QR Code para tela inicial (com efeito bounce) -->
+    <div id="qr-instagram-destaque" class="qr-code-container">
+        <div class="title">SIGA-NOS NO INSTAGRAM</div>
         <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-image">
+        <div class="subtitle">@visualmidialeme</div>
     </div>
 
-    <!-- QR Code pequeno em outras telas -->
-    <img id="qr-instagram-mini" src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-mini hidden">
+    <!-- QR Code para tela do jogo (maior) -->
+    <div id="qr-instagram-game" class="hidden">
+        <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-code-game">
+    </div>
 
     <div id="app" class="flex flex-col items-center justify-center p-4">
         <!-- Particle background -->
@@ -582,7 +600,7 @@
         <div id="game-screen" class="hidden w-full h-full flex flex-col items-center justify-center relative z-10">
             <div class="countdown-container">
                 <svg class="countdown-svg" width="100%" height="100%" viewBox="0 0 100 100">
-                    <circle class="countdown-circle-bg" cx="50" cy="50 r="45"></circle>
+                    <circle class="countdown-circle-bg" cx="50" cy="50" r="45"></circle>
                     <circle id="countdown-circle" class="countdown-circle" cx="50" cy="50" r="45"></circle>
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center text-4xl font-bold">
@@ -663,7 +681,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                                    
                     <div class="flex flex-col items-center">
                         <div class="podium-1 w-36 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">1º</span>
@@ -676,7 +694,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                                    
                     <div class="flex flex-col items-center">
                         <div class="podium-3 w-28 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">3º</span>
@@ -746,8 +764,8 @@
         const playerPositionOutside = playerOutsideTop.querySelector('.player-position');
         const playerNameOutside = playerOutsideTop.querySelector('.current-player-name');
         const playerScoreOutside = playerOutsideTop.querySelector('.current-player-score');
-        const qrGrande = document.getElementById("qr-instagram-destaque");
-        const qrMini = document.getElementById("qr-instagram-mini");
+        const qrGrande = document.getElementById('qr-instagram-destaque');
+        const qrGame = document.getElementById('qr-instagram-game');
 
         // Initialize the game
         function init() {
@@ -756,6 +774,24 @@
             createParticles();
             preventZoomAndDoubleTap();
             updateQRVisibility();
+        }
+
+        // Update QR code visibility based on current screen
+        function updateQRVisibility() {
+            const visibleScreen = Object.entries(screens).find(([_, el]) => !el.classList.contains('hidden'));
+            
+            if (!visibleScreen) return;
+            
+            if (visibleScreen[0] === 'start') {
+                qrGrande.classList.remove('hidden');
+                qrGame.classList.add('hidden');
+            } else if (visibleScreen[0] === 'game') {
+                qrGrande.classList.add('hidden');
+                qrGame.classList.remove('hidden');
+            } else {
+                qrGrande.classList.add('hidden');
+                qrGame.classList.add('hidden');
+            }
         }
 
         // Prevent zoom and double tap
@@ -964,10 +1000,11 @@
             const square = e.target;
             const index = parseInt(square.dataset.index);
             
-            if (gameState.activeSquares.includes(index)) {
+            if (gameState.activeSquares.includes(index) && Date.now() - gameState.lastClickTime > 100) {
                 gameState.score++;
                 scoreDisplay.textContent = gameState.score;
                 square.classList.remove('active');
+                gameState.lastClickTime = Date.now();
                 
                 square.classList.add('shake');
                 setTimeout(() => {
@@ -983,7 +1020,7 @@
                 setTimeout(() => {
                     activateRandomSquares();
                 }, 0); // No delay for immediate response
-            } else {
+            } else if (!gameState.activeSquares.includes(index)) {
                 // Flash red for wrong click
                 square.classList.add('wrong');
                 setTimeout(() => {
@@ -1059,7 +1096,7 @@
             
             if (ranking.length > 1) {
                 document.getElementById('second-place').textContent = ranking[1].name;
-                document.getElementById('second-score').textContent = `${ranking[1].score} pts`;
+                document.getElementById('second-score'). textContent = `${ranking[1].score} pts`;
             }
             
             if (ranking.length > 2) {
@@ -1102,7 +1139,7 @@
             // Mostrar jogador atual se estiver fora do top 10
             if (gameState.currentPlayer) {
                 const playerIndex = ranking.findIndex(p => 
-                    p.name === gameState.currentPlayer.name && 
+                    p.name === gameState.currentPlayer.name &&
                     p.score === gameState.currentPlayer.score
                 );
                 
@@ -1150,21 +1187,6 @@
             
             screens[screenName].classList.remove('hidden');
             updateQRVisibility();
-        }
-
-        // Update QR Code visibility based on current screen
-        function updateQRVisibility() {
-            const currentScreen = Object.entries(screens).find(([_, el]) => !el.classList.contains("hidden"));
-            
-            if (!currentScreen) return;
-            
-            if (currentScreen[0] === "start") {
-                qrGrande.classList.remove("hidden");
-                qrMini.classList.add("hidden");
-            } else {
-                qrGrande.classList.add("hidden");
-                qrMini.classList.remove("hidden");
-            }
         }
 
         // Show start screen
