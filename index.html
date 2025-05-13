@@ -483,10 +483,44 @@
         }
     </style>
 </head>
+    <script>
+    const qrGrande = document.getElementById("qr-instagram-destaque");
+    const qrMini = document.getElementById("qr-instagram-mini");
+
+    function atualizarQR() {
+        const telas = {
+            start: document.getElementById("start-screen"),
+            game: document.getElementById("game-screen"),
+            thanks: document.getElementById("thanks-screen"),
+            name: document.getElementById("name-screen"),
+            ranking: document.getElementById("ranking-screen")
+        };
+
+        const telaVisivel = Object.entries(telas).find(([_, el]) => !el.classList.contains("hidden"));
+
+        if (!telaVisivel) return;
+
+        if (telaVisivel[0] === "start") {
+            qrGrande.style.display = "flex";
+            qrMini.style.display = "none";
+        } else {
+            qrGrande.style.display = "none";
+            qrMini.style.display = "block";
+        }
+    }
+
+    const originalShowScreen = showScreen;
+    showScreen = function(screenName) {
+        originalShowScreen(screenName);
+        setTimeout(atualizarQR, 50);
+    };
+
+    document.addEventListener("DOMContentLoaded", atualizarQR);
+</script>
 <body>
 
 <!-- QR Code Fixo para Instagram -->
-<div id="instagram-fixed" style="
+<div id="qr-instagram-destaque" style="
     position: fixed;
     top: 2vh;
     right: 2vw;
@@ -507,6 +541,18 @@
     </div>
     <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram"
          style="width: 18vw; max-width: 250px; display: block;">
+</div>
+
+<!-- QR Code PEQUENO (somente QR, outras telas) -->
+<div id="qr-instagram-mini" style="
+    position: fixed;
+    top: 1vh;
+    right: 1vw;
+    z-index: 9999;
+    display: none;
+">
+    <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram"
+         style="width: 8vw; max-width: 100px;">
 </div>
 
     <div id="app" class="flex flex-col items-center justify-center p-4">
