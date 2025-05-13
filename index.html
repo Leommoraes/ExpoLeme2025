@@ -481,79 +481,77 @@
         .podium-container {
             margin-bottom: 2vh;
         }
+        
+        /* Estilos para o QR Code na tela inicial */
+        .qr-container {
+            position: fixed;
+            top: 2vh;
+            right: 2vw;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2vh 2vw;
+            border-radius: 1vw;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .qr-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        
+        .qr-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.4vw;
+            margin-bottom: 1vh;
+            color: white;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        .qr-image {
+            width: 18vw;
+            max-width: 250px;
+            display: block;
+            border: 2px solid white;
+            border-radius: 0.5vw;
+        }
+        
+        /* Estilos para o QR Code pequeno em outras telas */
+        .qr-mini {
+            position: fixed;
+            top: 1vh;
+            right: 1vw;
+            z-index: 9999;
+            width: 8vw;
+            max-width: 100px;
+            border: 2px solid white;
+            border-radius: 0.5vw;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .qr-mini:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
-    <script>
-    const qrGrande = document.getElementById("qr-instagram-destaque");
-    const qrMini = document.getElementById("qr-instagram-mini");
-
-    function atualizarQR() {
-        const telas = {
-            start: document.getElementById("start-screen"),
-            game: document.getElementById("game-screen"),
-            thanks: document.getElementById("thanks-screen"),
-            name: document.getElementById("name-screen"),
-            ranking: document.getElementById("ranking-screen")
-        };
-
-        const telaVisivel = Object.entries(telas).find(([_, el]) => !el.classList.contains("hidden"));
-
-        if (!telaVisivel) return;
-
-        if (telaVisivel[0] === "start") {
-            qrGrande.style.display = "flex";
-            qrMini.style.display = "none";
-        } else {
-            qrGrande.style.display = "none";
-            qrMini.style.display = "block";
-        }
-    }
-
-    const originalShowScreen = showScreen;
-    showScreen = function(screenName) {
-        originalShowScreen(screenName);
-        setTimeout(atualizarQR, 50);
-    };
-
-    document.addEventListener("DOMContentLoaded", atualizarQR);
-</script>
 <body>
-
-<!-- QR Code Fixo para Instagram -->
-<div id="qr-instagram-destaque" style="
-    position: fixed;
-    top: 2vh;
-    right: 2vw;
-    z-index: 9999;
-    font-family: 'Press Start 2P', cursive;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 2vh 2vw;
-    border-radius: 1vw;
-    box-shadow: 0 0 25px rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-">
-    <div style="font-size: 1.4vw; margin-bottom: 1vh; color: white; text-align: center;">
-        Siga-nos no Instagram
+    <!-- QR Code na tela inicial -->
+    <div id="qr-instagram-destaque" class="qr-container">
+        <div class="qr-title">SIGA-NOS NO INSTAGRAM</div>
+        <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-image">
     </div>
-    <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram"
-         style="width: 18vw; max-width: 250px; display: block;">
-</div>
 
-<!-- QR Code PEQUENO (somente QR, outras telas) -->
-<div id="qr-instagram-mini" style="
-    position: fixed;
-    top: 1vh;
-    right: 1vw;
-    z-index: 9999;
-    display: none;
-">
-    <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram"
-         style="width: 8vw; max-width: 100px;">
-</div>
+    <!-- QR Code pequeno em outras telas -->
+    <img id="qr-instagram-mini" src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-mini hidden">
 
     <div id="app" class="flex flex-col items-center justify-center p-4">
         <!-- Particle background -->
@@ -748,6 +746,8 @@
         const playerPositionOutside = playerOutsideTop.querySelector('.player-position');
         const playerNameOutside = playerOutsideTop.querySelector('.current-player-name');
         const playerScoreOutside = playerOutsideTop.querySelector('.current-player-score');
+        const qrGrande = document.getElementById("qr-instagram-destaque");
+        const qrMini = document.getElementById("qr-instagram-mini");
 
         // Initialize the game
         function init() {
@@ -755,6 +755,7 @@
             setupEventListeners();
             createParticles();
             preventZoomAndDoubleTap();
+            updateQRVisibility();
         }
 
         // Prevent zoom and double tap
@@ -1101,7 +1102,7 @@
             // Mostrar jogador atual se estiver fora do top 10
             if (gameState.currentPlayer) {
                 const playerIndex = ranking.findIndex(p => 
-                    p.name === gameState.currentPlayer.name &&
+                    p.name === gameState.currentPlayer.name && 
                     p.score === gameState.currentPlayer.score
                 );
                 
@@ -1148,6 +1149,22 @@
             });
             
             screens[screenName].classList.remove('hidden');
+            updateQRVisibility();
+        }
+
+        // Update QR Code visibility based on current screen
+        function updateQRVisibility() {
+            const currentScreen = Object.entries(screens).find(([_, el]) => !el.classList.contains("hidden"));
+            
+            if (!currentScreen) return;
+            
+            if (currentScreen[0] === "start") {
+                qrGrande.classList.remove("hidden");
+                qrMini.classList.add("hidden");
+            } else {
+                qrGrande.classList.add("hidden");
+                qrMini.classList.remove("hidden");
+            }
         }
 
         // Show start screen
