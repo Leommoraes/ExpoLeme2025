@@ -922,7 +922,9 @@
             
             rankingBtn.addEventListener('click', () => showScreen('ranking', 'right'));
             saveBtn.addEventListener('click', saveScore);
-            continueBtn.addEventListener('click', () => showScreen('name', 'right'));
+            continueBtn.addEventListener('click', () => {
+    showNameScreen();
+});
             rankingBackBtn.addEventListener('click', () => showScreen('start', 'left'));
             
             // Prevent default touch behaviors
