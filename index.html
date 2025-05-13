@@ -169,17 +169,17 @@
 
         /* Pódio ajustado para 4K - TAMANHOS REDUZIDOS */
         .podium-1 {
-            height: 15vh;  /* Reduzido de 25vh */
+            height: 12vh;  /* Reduzido de 25vh */
             background: linear-gradient(to bottom, #ffd700, #f9c712);
         }
 
         .podium-2 {
-            height: 12vh;  /* Reduzido de 20vh */
+            height: 10vh;  /* Reduzido de 20vh */
             background: linear-gradient(to bottom, #c0c0c0, #b0b0b0);
         }
 
         .podium-3 {
-            height: 9vh;   /* Reduzido de 15vh */
+            height: 8vh;   /* Reduzido de 15vh */
             background: linear-gradient(to bottom, #cd7f32, #b87333);
         }
 
@@ -270,19 +270,19 @@
 
         /* Ranking ajustado */
         #ranking-list {
-            max-height: 50vh;
-            overflow-y: auto;
-            scrollbar-width: none; /* Esconde a barra de rolagem no Firefox */
+            max-height: none;
+            overflow-y: visible;
+            scrollbar-width: none;
         }
 
         #ranking-list::-webkit-scrollbar {
-            display: none; /* Esconde a barra de rolagem no Chrome/Safari */
+            display: none;
         }
 
         .ranking-item {
-            font-size: 1.8vw;
-            padding: 1.5vh 1.5vw;
-            margin: 1vh 0;
+            font-size: 1.6vw;
+            padding: 1.2vh 1.2vw;
+            margin: 0.8vh 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -324,12 +324,12 @@
         /* Títulos ajustados */
         h1 {
             font-size: 4vw;
-            margin-bottom: 4vh;
+            margin-bottom: 3vh;
         }
 
         h2 {
             font-size: 3vw;
-            margin-bottom: 3vh;
+            margin-bottom: 2vh;
         }
 
         /* Partículas de fundo */
@@ -352,7 +352,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             animation: shine 3s linear infinite;
             letter-spacing: 1px;
-            font-size: 1.8vw;
+            font-size: 1.6vw;
         }
 
         @keyframes shine {
@@ -371,59 +371,28 @@
 
         /* Ajuste para o logo */
         .logo-container {
-            width: 20vw;
-            height: 20vw;
-            margin-bottom: 5vh;
+            width: 18vw;
+            height: 18vw;
+            margin-bottom: 4vh;
         }
 
         /* Ajuste para o Instagram */
         .instagram-pixel {
-            width: 6vw;
-            height: 6vw;
-            border-radius: 1.5vw;
+            width: 5vw;
+            height: 5vw;
+            border-radius: 1.2vw;
         }
 
         .instagram-pixel::before {
-            width: 4vw;
-            height: 4vw;
-            border-radius: 1vw;
-            border: 0.5vw solid white;
+            width: 3.5vw;
+            height: 3.5vw;
+            border-radius: 0.8vw;
+            border: 0.4vw solid white;
         }
 
         .instagram-pixel::after {
-            width: 1.5vw;
-            height: 1.5vw;
-        }
-
-        /* Barra de rolagem personalizada */
-        #ranking-list::-webkit-scrollbar {
-            width: 0.8vw;
-        }
-
-        #ranking-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 0.4vw;
-        }
-
-        #ranking-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 0.4vw;
-        }
-
-        #ranking-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Ajuste para campos de entrada */
-        input {
-            font-size: 2vw;
-            padding: 1.5vh 2vw;
-            border-radius: 1vw;
-            touch-action: manipulation;
-        }
-
-        label {
-            font-size: 1.8vw;
+            width: 1.2vw;
+            height: 1.2vw;
         }
 
         /* Botão de voltar no ranking */
@@ -444,7 +413,7 @@
         .ranking-header {
             display: flex;
             justify-content: center;
-            margin-bottom: 3vh;
+            margin-bottom: 2vh;
         }
 
         /* Estilo para o jogador fora do top 10 */
@@ -454,7 +423,7 @@
             margin-top: 2vh;
             padding: 1.5vh 1.5vw;
             border-radius: 1vw;
-            font-size: 1.8vw;
+            font-size: 1.6vw;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -472,7 +441,7 @@
             color: white;
             text-shadow: 0 0 5px rgba(255,255,255,0.5);
             letter-spacing: 1px;
-            font-size: 1.8vw;
+            font-size: 1.6vw;
             font-weight: bold;
             flex: 1;
             padding: 0 1.5vw;
@@ -503,8 +472,14 @@
 
         .ranking-container {
             height: auto;
-            max-height: 70vh;
-            overflow-y: hidden;
+            max-height: 80vh;
+            overflow-y: visible;
+            padding-bottom: 2vh;
+        }
+
+        /* Ajuste para o pódio */
+        .podium-container {
+            margin-bottom: 2vh;
         }
     </style>
 </head>
@@ -594,7 +569,7 @@
         </div>
 
         <!-- Tela de Ranking - MODIFICADA COM PÓDIOS MENORES E SEM BOTÃO DE VOLTAR -->
-        <div id="ranking-screen" class="hidden w-full h-full flex flex-col items-center justify-start pt-16 px-8 relative z-10">
+        <div id="ranking-screen" class="hidden w-full h-full flex flex-col items-center justify-start pt-12 px-8 relative z-10">
             <!-- Botão de voltar -->
             <button id="ranking-back-btn" class="ranking-back-btn bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <i class="fas fa-home text-2xl"></i>
@@ -606,9 +581,9 @@
                     <h2 class="text-5xl font-bold text-yellow-400">RANKING</h2>
                 </div>
                 
-                <div class="flex items-end justify-center space-x-8 mb-8 w-full">
+                <div class="podium-container flex items-end justify-center space-x-6 mb-6 w-full">
                     <div class="flex flex-col items-center">
-                        <div class="podium-2 w-32 rounded-t-2xl flex items-end justify-center pb-4">
+                        <div class="podium-2 w-28 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">2º</span>
                         </div>
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
@@ -621,7 +596,7 @@
                     </div>
                     
                     <div class="flex flex-col items-center">
-                        <div class="podium-1 w-40 rounded-t-2xl flex items-end justify-center pb-4">
+                        <div class="podium-1 w-36 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">1º</span>
                         </div>
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
@@ -634,7 +609,7 @@
                     </div>
                     
                     <div class="flex flex-col items-center">
-                        <div class="podium-3 w-32 rounded-t-2xl flex items-end justify-center pb-4">
+                        <div class="podium-3 w-28 rounded-t-2xl flex items-end justify-center pb-4">
                             <span class="text-4xl font-bold">3º</span>
                         </div>
                         <div class="bg-gray-700/50 w-full py-4 rounded-b-2xl text-center">
@@ -647,7 +622,7 @@
                     </div>
                 </div>
                 
-                <div id="ranking-list" class="w-full space-y-4">
+                <div id="ranking-list" class="w-full space-y-2 mb-4">
                     <!-- Ranking items will be generated by JavaScript -->
                 </div>
 
@@ -1035,21 +1010,6 @@
                 position.className = 'player-position';
                 position.textContent = `${i+1}º`;
                 
-                // Adiciona medalhas para as posições 4-10
-                if (i === 3) { // 4º lugar
-                    const medal = document.createElement('i');
-                    medal.className = 'fas fa-medal medal-bronze medal-icon';
-                    position.appendChild(medal);
-                } else if (i === 4) { // 5º lugar
-                    const medal = document.createElement('i');
-                    medal.className = 'fas fa-star text-blue-400 medal-icon';
-                    position.appendChild(medal);
-                } else if (i === 5) { // 6º lugar
-                    const medal = document.createElement('i');
-                    medal.className = 'fas fa-star text-purple-400 medal-icon';
-                    position.appendChild(medal);
-                }
-                
                 const name = document.createElement('div');
                 name.className = 'player-name';
                 name.textContent = player.name;
@@ -1077,12 +1037,6 @@
                 if (playerIndex !== -1 && playerIndex >= 10) {
                     playerOutsideTop.classList.remove('hidden');
                     playerPositionOutside.textContent = `${playerIndex + 1}º`;
-                    
-                    // Adiciona ícone de troféu para o jogador fora do top 10
-                    const trophy = document.createElement('i');
-                    trophy.className = 'fas fa-trophy text-yellow-400 medal-icon';
-                    playerPositionOutside.appendChild(trophy);
-                    
                     playerNameOutside.textContent = gameState.currentPlayer.name;
                     playerScoreOutside.textContent = `${gameState.currentPlayer.score} pts`;
                 } else {
