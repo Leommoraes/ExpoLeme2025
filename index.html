@@ -512,12 +512,11 @@
         }
 
         .qr-code-container .qr-image {
-            width: 18vw;
-            max-width: 250px;
+            width: 22vw; /* Aumentado de 18vw para 22vw */
+            max-width: 300px; /* Aumentado de 250px para 300px */
             display: block;
             border: 2px solid white;
             border-radius: 1vw;
-            animation: bounce 2s infinite;
         }
 
         .qr-code-container .subtitle {
@@ -544,8 +543,8 @@
             top: 2vh;
             right: 2vw;
             z-index: 9999;
-            width: 15vw;
-            max-width: 200px;
+            width: 22vw; /* Aumentado de 15vw para 22vw */
+            max-width: 300px; /* Aumentado de 200px para 300px */
             border: 2px solid white;
             border-radius: 1vw;
             box-shadow: 0 0 20px rgba(0,0,0,0.7);
@@ -556,10 +555,53 @@
             transform: scale(1.05);
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.9);
         }
+
+        /* Efeitos de transição entre telas */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .screen.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .screen.slide-out-left {
+            transform: translateX(-100%);
+        }
+
+        .screen.slide-out-right {
+            transform: translateX(100%);
+        }
+
+        .screen.slide-in-left {
+            animation: slideInLeft 0.5s forwards;
+        }
+
+        .screen.slide-in-right {
+            animation: slideInRight 0.5s forwards;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <!-- QR Code para tela inicial (com efeito bounce) -->
+    <!-- QR Code para tela inicial (sem efeito bounce) -->
     <div id="qr-instagram-destaque" class="qr-code-container">
         <div class="title">SIGA-NOS NO INSTAGRAM</div>
         <img src="Assets/QR_CODE_INSTA-removebg-preview.png" alt="QR Code Instagram" class="qr-image">
@@ -576,7 +618,7 @@
         <div id="particles" class="absolute inset-0 pointer-events-none"></div>
 
         <!-- Tela Inicial -->
-        <div id="start-screen" class="flex flex-col items-center justify-center text-center w-full h-full relative z-10">
+        <div id="start-screen" class="screen flex flex-col items-center justify-center text-center w-full h-full relative z-10">
             <!-- Logo -->
             <div class="logo-container flex items-center justify-center bg-white/20 rounded-full backdrop-blur-sm border-2 border-white/30">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo9TY0cHKsQJaxM0dSpUZA-r-N_k1lkUU_ig&s" alt="Logo da Escola" class="logo-img">
@@ -597,7 +639,7 @@
         </div>
 
         <!-- Tela do Jogo -->
-        <div id="game-screen" class="hidden w-full h-full flex flex-col items-center justify-center relative z-10">
+        <div id="game-screen" class="screen hidden w-full h-full flex flex-col items-center justify-center relative z-10">
             <div class="countdown-container">
                 <svg class="countdown-svg" width="100%" height="100%" viewBox="0 0 100 100">
                     <circle class="countdown-circle-bg" cx="50" cy="50" r="45"></circle>
@@ -618,7 +660,7 @@
         </div>
 
         <!-- Tela de Agradecimento -->
-        <div id="thanks-screen" class="hidden w-full h-full flex flex-col items-center justify-center text-center px-8 relative z-10">
+        <div id="thanks-screen" class="screen hidden w-full h-full flex flex-col items-center justify-center text-center px-8 relative z-10">
             <div class="bg-white/10 backdrop-blur-sm p-12 rounded-3xl border border-white/20 max-w-2xl w-full">
                 <h2 class="font-bold mb-12">OBRIGADO POR JOGAR!</h2>
                 
@@ -639,7 +681,7 @@
         </div>
 
         <!-- Tela de Cadastro de Nome -->
-        <div id="name-screen" class="hidden w-full h-full flex flex-col items-center justify-center text-center px-8 relative z-10">
+        <div id="name-screen" class="screen hidden w-full h-full flex flex-col items-center justify-center text-center px-8 relative z-10">
             <div class="bg-white/10 backdrop-blur-sm p-12 rounded-3xl border border-white/20 max-w-2xl w-full">
                 <h2 class="font-bold mb-8">REGISTRE SEU NOME</h2>
                 <p class="text-3xl mb-12">Sua pontuação: <span id="final-score" class="font-bold text-blue-400">0</span></p>
@@ -649,14 +691,14 @@
                     <input type="text" id="player-name" maxlength="20" class="w-full rounded-xl text-gray-800 text-center font-bold" placeholder="SEU NICK">
                 </div>
                 
-                <button id="save-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg pixel-btn text-3xl py-6">
+                <button id="save-btn" class="bg-green-600 hover:bg-green-7 00 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg pixel-btn text-3xl py-6">
                     SALVAR E VER RANKING
                 </button>
             </div>
         </div>
 
         <!-- Tela de Ranking - MODIFICADA COM PÓDIOS MENORES E SEM BOTÃO DE VOLTAR -->
-        <div id="ranking-screen" class="hidden w-full h-full flex flex-col items-center justify-start pt-12 px-8 relative z-10">
+        <div id="ranking-screen" class="screen hidden w-full h-full flex flex-col items-center justify-start pt-12 px-8 relative z-10">
             <!-- Botão de voltar -->
             <button id="ranking-back-btn" class="ranking-back-btn bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <i class="fas fa-home text-2xl"></i>
@@ -873,11 +915,15 @@
 
         // Set up event listeners
         function setupEventListeners() {
-            startBtn.addEventListener('click', startGame);
-            rankingBtn.addEventListener('click', showRanking);
+            startBtn.addEventListener('click', () => {
+                showScreen('game', 'right');
+                startGame();
+            });
+            
+            rankingBtn.addEventListener('click', () => showScreen('ranking', 'right'));
             saveBtn.addEventListener('click', saveScore);
-            continueBtn.addEventListener('click', showNameScreen);
-            rankingBackBtn.addEventListener('click', showStartScreen);
+            continueBtn.addEventListener('click', () => showScreen('name', 'right'));
+            rankingBackBtn.addEventListener('click', () => showScreen('start', 'left'));
             
             // Prevent default touch behaviors
             document.addEventListener('touchstart', function(e) {
@@ -893,7 +939,6 @@
 
         // Start the game (optimized for performance)
         function startGame() {
-            showScreen('game');
             resetGame();
             
             gameState.isPlaying = true;
@@ -1039,13 +1084,13 @@
             });
             gameState.activeSquares = [];
             
-            showScreen('thanks');
+            showScreen('thanks', 'right');
         }
 
         // Show name input screen
         function showNameScreen() {
             finalScoreDisplay.textContent = gameState.score;
-            showScreen('name');
+            showScreen('name', 'right');
         }
 
         // Save player score (optimized)
@@ -1064,7 +1109,7 @@
             };
             
             saveToLocalStorage(gameState.currentPlayer);
-            showRanking();
+            showScreen('ranking', 'right');
         }
 
         // Save to localStorage (optimized)
@@ -1086,7 +1131,6 @@
 
         // Show ranking screen (optimized)
         function showRanking() {
-            showScreen('ranking');
             const ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
             
             if (ranking.length > 0) {
@@ -1179,19 +1223,40 @@
             }
         }
 
-        // Show specific screen
-        function showScreen(screenName) {
+        // Show specific screen with transition
+        function showScreen(screenName, direction = 'right') {
+            // Hide all screens first
             Object.values(screens).forEach(screen => {
                 screen.classList.add('hidden');
             });
             
-            screens[screenName].classList.remove('hidden');
+            // Show the target screen with animation
+            const targetScreen = screens[screenName];
+            targetScreen.classList.remove('hidden');
+            
+            // Apply slide-in animation based on direction
+            if (direction === 'right') {
+                targetScreen.classList.add('slide-in-right');
+            } else {
+                targetScreen.classList.add('slide-in-left');
+            }
+            
+            // Remove animation class after transition ends
+            targetScreen.addEventListener('animationend', () => {
+                targetScreen.classList.remove('slide-in-right', 'slide-in-left');
+            }, { once: true });
+            
             updateQRVisibility();
+            
+            // If showing ranking screen, update it
+            if (screenName === 'ranking') {
+                showRanking();
+            }
         }
 
         // Show start screen
         function showStartScreen() {
-            showScreen('start');
+            showScreen('start', 'left');
             resetGame();
         }
 
