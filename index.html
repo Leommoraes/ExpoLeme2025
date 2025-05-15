@@ -1129,77 +1129,77 @@
 
         // Show ranking screen (optimized)
         function showRanking() {
-            const ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
-            
-            if (ranking.length > 0) {
-                document.getElementById('first-place').textContent = ranking[0].name;
-                document.getElementById('first-score').textContent = `${ranking[0].score} pts`;
-            }
-            
-            if (ranking.length > 1) {
-                document.getElementById('second-place').textContent = ranking[1].name;
-                document.getElementById('second-score'). textContent = `${ranking[1].score} pts`;
-            }
-            
-            if (ranking.length > 2) {
-                document.getElementById('third-place').textContent = ranking[2].name;
-                document.getElementById('third-score').textContent = `${ranking[2].score} pts`;
-            }
-            
-            const rankingList = document.getElementById('ranking-list');
-            rankingList.innerHTML = '';
-            
-            // Use document fragment for better performance
-            const fragment = document.createDocumentFragment();
-            
-            for (let i = 3; i < Math.min(10, ranking.length); i++) {
-                const player = ranking[i];
-                const item = document.createElement('div');
-                item.className = 'ranking-item';
-                
-                const position = document.createElement('div');
-                position.className = 'player-position';
-                position.textContent = `${i+1}º`;
-                
-                const name = document.createElement('div');
-                name.className = 'player-name';
-                name.textContent = player.name;
-                
-                const score = document.createElement('div');
-                score.className = 'player-score';
-                score.textContent = `${player.score} pts`;
-                
-                item.appendChild(position);
-                item.appendChild(name);
-                item.appendChild(score);
-                
-                fragment.appendChild(item);
-            }
-            
-            rankingList.appendChild(fragment);
-            
-            // Mostrar jogador atual se estiver fora do top 10
-            if (gameState.currentPlayer) {
-                // Procurar o jogador atual pela última ocorrência com mesmo nome e score
-            let playerIndex = -1;
-            for (let i = ranking.length - 1; i >= 0; i--) {
+    const ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
+
+    if (ranking.length > 0) {
+        document.getElementById('first-place').textContent = ranking[0].name;
+        document.getElementById('first-score').textContent = `${ranking[0].score} pts`;
+    }
+
+    if (ranking.length > 1) {
+        document.getElementById('second-place').textContent = ranking[1].name;
+        document.getElementById('second-score').textContent = `${ranking[1].score} pts`;
+    }
+
+    if (ranking.length > 2) {
+        document.getElementById('third-place').textContent = ranking[2].name;
+        document.getElementById('third-score').textContent = `${ranking[2].score} pts`;
+    }
+
+    const rankingList = document.getElementById('ranking-list');
+    rankingList.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 3; i < Math.min(10, ranking.length); i++) {
+        const player = ranking[i];
+        const item = document.createElement('div');
+        item.className = 'ranking-item';
+
+        const position = document.createElement('div');
+        position.className = 'player-position';
+        position.innerHTML = `${i + 1}&ordm;`; // Use HTML entity para evitar o "?"
+
+        const name = document.createElement('div');
+        name.className = 'player-name';
+        name.textContent = player.name;
+
+        const score = document.createElement('div');
+        score.className = 'player-score';
+        score.textContent = `${player.score} pts`;
+
+        item.appendChild(position);
+        item.appendChild(name);
+        item.appendChild(score);
+
+        fragment.appendChild(item);
+    }
+
+    rankingList.appendChild(fragment);
+
+    if (gameState.currentPlayer) {
+        let playerIndex = -1;
+        for (let i = ranking.length - 1; i >= 0; i--) {
             const p = ranking[i];
             if (p.name === gameState.currentPlayer.name && p.score === gameState.currentPlayer.score) {
-            playerIndex = i;
-            break;
-        }
-    }
+                playerIndex = i;
+                break;
             }
-
-if (playerIndex !== -1 && playerIndex >= 10) {
-    playerOutsideTop.classList.remove('hidden');
-    playerPositionOutside.textContent = `${playerIndex + 1}º`;
-    playerNameOutside.textContent = gameState.currentPlayer.name;
-    playerScoreOutside.textContent = `${gameState.currentPlayer.score} pts`;
-} else {
-    playerOutsideTop.classList.add('hidden');
-}
         }
+
+        if (playerIndex !== -1 && playerIndex >= 10) {
+            playerOutsideTop.classList.remove('hidden');
+            playerPositionOutside.innerHTML = `${playerIndex + 1}&ordm;`;
+            playerNameOutside.textContent = gameState.currentPlayer.name;
+            playerScoreOutside.textContent = `${gameState.currentPlayer.score} pts`;
+            playerNameOutside.style.color = 'white';
+        } else {
+            playerOutsideTop.classList.add('hidden');
+        }
+    } else {
+        playerOutsideTop.classList.add('hidden');
+    }
+}
 
         // Reset game state
         function resetGame() {
