@@ -1180,22 +1180,24 @@
             
             // Mostrar jogador atual se estiver fora do top 10
             if (gameState.currentPlayer) {
-                const playerIndex = ranking.findIndex(p => 
-                    p.name === gameState.currentPlayer.name &&
-                    p.score === gameState.currentPlayer.score
-                );
-                
-                if (playerIndex !== -1 && playerIndex >= 10) {
-                    playerOutsideTop.classList.remove('hidden');
-                    playerPositionOutside.textContent = `${playerIndex + 1}º`;
-                    playerNameOutside.textContent = gameState.currentPlayer.name;
-                    playerScoreOutside.textContent = `${gameState.currentPlayer.score} pts`;
-                } else {
-                    playerOutsideTop.classList.add('hidden');
-                }
-            } else {
-                playerOutsideTop.classList.add('hidden');
-            }
+                // Procurar o jogador atual pela última ocorrência com mesmo nome e score
+            let playerIndex = -1;
+            for (let i = ranking.length - 1; i >= 0; i--) {
+            const p = ranking[i];
+            if (p.name === gameState.currentPlayer.name && p.score === gameState.currentPlayer.score) {
+            playerIndex = i;
+            break;
+        }
+    }
+
+if (playerIndex !== -1 && playerIndex >= 10) {
+    playerOutsideTop.classList.remove('hidden');
+    playerPositionOutside.textContent = `${playerIndex + 1}º`;
+    playerNameOutside.textContent = gameState.currentPlayer.name;
+    playerScoreOutside.textContent = `${gameState.currentPlayer.score} pts`;
+} else {
+    playerOutsideTop.classList.add('hidden');
+}
         }
 
         // Reset game state
