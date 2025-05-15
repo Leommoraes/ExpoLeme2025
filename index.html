@@ -1117,20 +1117,15 @@
 
         // Save to localStorage (optimized)
         function saveToLocalStorage(player) {
-            let ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
-            ranking.push(player);
-            
-            // Optimized sorting - only sort when needed
-            if (ranking.length > 1) {
-                ranking.sort((a, b) => b.score - a.score);
-            }
-            
-            if (ranking.length > 50) {
-                ranking = ranking.slice(0, 50);
-            }
-            
-            localStorage.setItem('reflexGameRanking', JSON.stringify(ranking));
-        }
+    let ranking = JSON.parse(localStorage.getItem('reflexGameRanking')) || [];
+    ranking.push(player);
+
+    // Ordenar por pontuação decrescente
+    ranking.sort((a, b) => b.score - a.score);
+
+    // Salvar tudo (sem limitar a 50)
+    localStorage.setItem('reflexGameRanking', JSON.stringify(ranking));
+}
 
         // Show ranking screen (optimized)
         function showRanking() {
