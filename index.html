@@ -916,9 +916,10 @@
         // Set up event listeners
         function setupEventListeners() {
             startBtn.addEventListener('click', () => {
-                showScreen('game', 'right');
-                startGame();
-            });
+    showScreen('game', 'right');
+    resetGame(); // Apenas prepara a tela
+    activateRandomSquares(); // Mostra quadrados, mas sem iniciar o timer
+});
             
             rankingBtn.addEventListener('click', () => showScreen('ranking', 'right'));
             saveBtn.addEventListener('click', saveScore);
@@ -1042,7 +1043,16 @@
 
         // Handle square click (optimized for instant response)
         function handleSquareClick(e) {
-            if (!gameState.isPlaying) return;
+            const square = e.target;
+    const index = parseInt(square.dataset.index);
+
+    // Iniciar o jogo no primeiro clique em quadrado azul
+    if (!gameState.isPlaying && square.classList.contains('active')) {
+        gameState.isPlaying = true;
+        startTimer(); // inicia o timer de 20s
+    }
+
+    if (!gameState.isPlaying) return;
             
             const square = e.target;
             const index = parseInt(square.dataset.index);
@@ -1075,6 +1085,44 @@
                 }, 200);
             }
         }
+
+        
+        // Start the timer and game loop
+        function startTimer() {
+            const circumference = 2 * Math.PI * 45;
+            countdownCircle.style.strokeDasharray = circumference;
+            countdownCircle.style.strokeDashoffset = circumference;
+
+            const countdownInterval = setInterval(() => {
+                gameState.timeLeft--;
+                timeLeftDisplay.textContent = gameState.timeLeft;
+
+                const offset = circumference * (gameState.timeLeft / 20);
+                countdownCircle.style.strokeDashoffset = offset;
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    endGame();
+                }
+            }, 1000);
+
+            gameState.squareActivationInterval = setInterval(() => {
+                if (gameState.activeSquares.length < gameState.minActiveSquares) {
+                    activateRandomSquares();
+                }
+            }, 200);
+
+            const gameLoop = (timestamp) => {
+                if (!gameState.isPlaying) return;
+                requestAnimationFrame(gameLoop);
+                if (timestamp - gameState.lastFrameTime >= 16) {
+                    gameState.lastFrameTime = timestamp;
+                    updateGame();
+                }
+            };
+            requestAnimationFrame(gameLoop);
+        }
+
 
         // End the game
         function endGame() {
