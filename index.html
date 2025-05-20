@@ -899,18 +899,34 @@
             const fragment = document.createDocumentFragment();
                         
             for (let i = 0; i < squareCount; i++) {
-                const square = document.createElement('div');
-                square.className = 'square aspect-square bg-white/90 cursor-pointer';
-                square.dataset.index = i;
-                                
-                // Otimização: usar pointer events para melhor resposta ao toque
-                square.addEventListener('pointerdown', function(e) {
-                    e.preventDefault();
-                    handleSquareClick(e);
-                }, { passive: false });
-                                
-                fragment.appendChild(square);
-            }
+    const square = document.createElement('div');
+    square.className = 'square aspect-square bg-white/90 cursor-pointer';
+    square.dataset.index = i;
+
+    // Adiciona a imagem da logo dentro do quadrado
+    const logoImg = document.createElement('img');
+    logoImg.src = 'Assets/logo-escola.png'; // <-- substitua esse caminho pelo nome do seu arquivo PNG da logo
+    logoImg.alt = 'Logo da Escola';
+    logoImg.style.width = '80%';
+    logoImg.style.height = '80%';
+    logoImg.style.objectFit = 'contain';
+    logoImg.style.pointerEvents = 'none';
+    logoImg.style.margin = 'auto';
+    logoImg.style.position = 'absolute';
+    logoImg.style.top = '0';
+    logoImg.style.bottom = '0';
+    logoImg.style.left = '0';
+    logoImg.style.right = '0';
+
+    square.appendChild(logoImg);
+
+    square.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        handleSquareClick(e);
+    }, { passive: false });
+
+    fragment.appendChild(square);
+}
                         
             gameBoard.appendChild(fragment);
         }
